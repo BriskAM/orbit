@@ -28,24 +28,36 @@
       <!-- Profile Header Snapshot -->
       <div class="profile-card">
         <div class="profile-info">
-          <img :src="profile.avatarUrl" :alt="profile.name" class="avatar" />
+          <img :src="profile.profile.avatar_url" :alt="profile.profile.display_name" class="avatar" />
           <div class="meta">
-            <h2 class="display-name">{{ profile.name || profile.login }}</h2>
-            <p class="username">@{{ profile.login }}</p>
-            <p v-if="profile.bio" class="bio">{{ profile.bio }}</p>
+            <h2 class="display-name">{{ profile.profile.display_name || profile.profile.username }}</h2>
+            <p class="username">@{{ profile.profile.username }}</p>
+            <p v-if="profile.profile.bio" class="bio">{{ profile.profile.bio }}</p>
             
             <div class="stats-row">
               <div class="stat">
-                <span class="stat-value">{{ profile.followers?.totalCount }}</span>
+                <span class="stat-value">{{ profile.profile.follower_count }}</span>
                 <span class="stat-label">Followers</span>
               </div>
               <div class="stat">
-                <span class="stat-value">{{ profile.following?.totalCount }}</span>
+                <span class="stat-value">{{ profile.profile.following_count }}</span>
                 <span class="stat-label">Following</span>
               </div>
               <div class="stat">
-                <span class="stat-value">{{ profile.repositories?.totalCount }}</span>
+                <span class="stat-value">{{ profile.profile.public_repo_count }}</span>
                 <span class="stat-label">Repos</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">{{ profile.profile.total_stars_earned }}</span>
+                <span class="stat-label">Stars Earned</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">{{ profile.profile.total_forks_received }}</span>
+                <span class="stat-label">Forks Received</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value text-secondary">{{ profile.profile.top_language || 'None' }}</span>
+                <span class="stat-label">Top Language</span>
               </div>
             </div>
           </div>
