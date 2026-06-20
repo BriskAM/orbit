@@ -1,32 +1,45 @@
 <template>
   <div class="landing-container">
-    <div class="glow-blob"></div>
-    <div class="hero-content">
-      <h1 class="display-title">🛰️ Orbit</h1>
-      <p class="subtitle">Your GitHub, visualized. In-depth profile stats and analytics.</p>
-      
+    <div class="search-box-card">
+      <div class="search-header">
+        <!-- Octocat Logo SVG -->
+        <svg height="48" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="48" fill="currentColor" class="github-logo">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.35 3.12.87 0 .68.01 1.3.01 1.49 0 .21-.15.47-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+        <h1 class="search-title">Visualize a GitHub Profile</h1>
+      </div>
+
       <form @submit.prevent="handleSubmit" class="search-form">
-        <div class="input-wrapper">
+        <div class="form-group">
+          <label for="username" class="input-label">GitHub Username</label>
           <input
             v-model="username"
+            id="username"
             type="text"
-            placeholder="Enter GitHub username (e.g. torvalds)"
+            placeholder="e.g. torvalds, octocat"
             class="username-input"
             required
             :disabled="loading"
+            autocomplete="off"
+            autofocus
           />
-          <button type="submit" class="submit-button" :disabled="loading">
-            <span v-if="loading">Searching...</span>
-            <span v-else>Visualize</span>
-          </button>
         </div>
+
+        <button type="submit" class="submit-button" :disabled="loading">
+          <span v-if="loading">Fetching footprints...</span>
+          <span v-else>Visualize Profile</span>
+        </button>
       </form>
-      
-      <div class="examples">
-        <span class="example-label">Try these:</span>
-        <button @click="quickSearch('torvalds')" class="example-chip">@torvalds</button>
-        <button @click="quickSearch('octocat')" class="example-chip">@octocat</button>
-        <button @click="quickSearch('yyx990803')" class="example-chip">@yyx990803</button>
+    </div>
+
+    <div class="quick-links-box">
+      <span class="examples-label">Try these profiles:</span>
+      <div class="examples-chips">
+        <button @click="quickSearch('torvalds')" class="example-link">@torvalds</button>
+        <span class="divider">•</span>
+        <button @click="quickSearch('octocat')" class="example-link">@octocat</button>
+        <span class="divider">•</span>
+        <button @click="quickSearch('yyx990803')" class="example-link">@yyx990803</button>
       </div>
     </div>
   </div>
@@ -58,143 +71,140 @@ const quickSearch = (name) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 80vh;
-  position: relative;
-  overflow: hidden;
+  min-height: 70vh;
   padding: var(--spacing-gutter);
+  background-color: var(--color-background);
 }
 
-.glow-blob {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(221, 183, 255, 0.15) 0%, rgba(93, 230, 255, 0.05) 60%, rgba(0, 0, 0, 0) 100%);
-  filter: blur(45px);
-  z-index: -1;
-  pointer-events: none;
-}
-
-.hero-content {
-  text-align: center;
+.search-box-card {
+  background-color: var(--color-surface-container);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--rounded-default);
   width: 100%;
-  max-width: 600px;
-  z-index: 1;
+  max-width: 340px;
+  padding: 24px;
+  margin-bottom: 16px;
 }
 
-.display-title {
-  font-family: 'Quicksand', sans-serif;
-  font-size: 4rem;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  margin-bottom: 1rem;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.search-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
-.subtitle {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 1.25rem;
-  color: var(--color-on-surface-variant);
-  margin-bottom: 2.5rem;
-  line-height: 1.6;
+.github-logo {
+  color: var(--color-on-background);
+  margin-bottom: 16px;
+}
+
+.search-title {
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--color-on-surface);
+  text-align: center;
+  letter-spacing: -0.5px;
 }
 
 .search-form {
-  width: 100%;
-  margin-bottom: 2.5rem;
-}
-
-.input-wrapper {
-  position: relative;
   display: flex;
-  background: var(--color-glass-fill);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--rounded-full);
-  padding: 6px;
-  backdrop-filter: blur(12px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-direction: column;
+  gap: 16px;
 }
 
-.input-wrapper:focus-within {
-  border-color: var(--color-secondary);
-  box-shadow: 0 0 25px rgba(93, 230, 255, 0.25);
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-on-surface);
+  text-align: left;
 }
 
 .username-input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  padding: 14px 24px;
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 1.1rem;
-  color: var(--color-on-surface);
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--rounded-sm);
+  color: var(--color-on-background);
+  padding: 6px 12px;
+  font-size: 14px;
   outline: none;
+  font-family: inherit;
 }
 
-.username-input::placeholder {
-  color: rgba(228, 225, 233, 0.35);
+.username-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.3);
 }
 
 .submit-button {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-weight: 700;
-  background: var(--color-primary-container);
-  color: var(--color-on-primary-container);
-  border: none;
-  border-radius: var(--rounded-full);
-  padding: 14px 36px;
+  background-color: var(--color-secondary-container); /* Green */
+  color: #ffffff;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: var(--rounded-sm);
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  width: 100%;
+  transition: background-color 0.1s ease;
 }
 
-.submit-button:hover {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  transform: scale(1.02) translateY(-1px);
+.submit-button:hover:not(:disabled) {
+  background-color: #2ea44f;
 }
 
-.submit-button:active {
-  transform: scale(0.98);
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.examples {
+.quick-links-box {
+  background-color: transparent;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--rounded-default);
+  width: 100%;
+  max-width: 340px;
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.examples-label {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.examples-chips {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.example-label {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.95rem;
-  color: rgba(228, 225, 233, 0.45);
-}
-
-.example-chip {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  background: var(--color-glass-fill);
-  border: 1px solid var(--color-border-subtle);
-  color: var(--color-secondary);
-  padding: 6px 16px;
-  border-radius: var(--rounded-full);
+.example-link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
 }
 
-.example-chip:hover {
-  border-color: var(--color-secondary);
-  background: rgba(93, 230, 255, 0.1);
-  transform: translateY(-2px);
+.example-link:hover {
+  text-decoration: underline;
 }
 
-.example-chip:active {
-  transform: translateY(0);
+.divider {
+  color: var(--color-on-surface-variant);
+  font-size: 12px;
+  user-select: none;
 }
 </style>

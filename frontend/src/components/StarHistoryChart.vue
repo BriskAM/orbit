@@ -157,33 +157,30 @@ const hidePointTooltip = () => {
 
 <style scoped>
 .star-card {
-  background: var(--color-glass-fill);
+  background-color: var(--color-surface-container);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--rounded-md);
-  padding: 2rem;
-  backdrop-filter: blur(12px);
+  padding: 16px;
   height: 100%;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
 }
 
 .card-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 16px;
   text-align: left;
 }
 
 .card-title {
-  font-family: 'Quicksand', sans-serif;
-  font-size: 1.4rem;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--color-on-surface);
 }
 
 .card-subtitle {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.85rem;
+  font-size: 11px;
   color: var(--color-on-surface-variant);
-  margin-top: 0.25rem;
+  margin-top: 4px;
 }
 
 .chart-container-wrapper {
@@ -206,23 +203,22 @@ const hidePointTooltip = () => {
 
 .chart-dot {
   cursor: pointer;
-  transition: r 0.1s ease, stroke-width 0.1s ease;
+  transition: r 0.1s ease;
 }
 
 .chart-dot:hover {
   r: 6;
-  stroke-width: 3.5px;
 }
 
 .labels-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 0.5rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8rem;
-  color: rgba(228, 225, 233, 0.4);
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
   border-top: 1px solid var(--color-border-subtle);
-  padding-top: 0.5rem;
+  padding-top: 8px;
 }
 
 .no-data {
@@ -231,13 +227,13 @@ const hidePointTooltip = () => {
   align-items: center;
   justify-content: center;
   flex-grow: 1;
-  padding: 3rem 0;
+  padding: 24px 0;
   color: var(--color-on-surface-variant);
 }
 
 .no-data-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
+  font-size: 24px;
+  margin-bottom: 8px;
   opacity: 0.3;
 }
 </style>
@@ -245,13 +241,12 @@ const hidePointTooltip = () => {
 <style>
 .chart-tooltip {
   position: absolute;
-  background: #1b1b20;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #161b22;
+  border: 1px solid var(--color-border-subtle);
   color: var(--color-on-surface);
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: var(--rounded-sm);
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.8rem;
+  font-size: 11px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   z-index: 9999;

@@ -1,43 +1,57 @@
 <template>
-  <div class="profile-header-card">
-    <div class="header-main">
+  <div class="profile-sidebar">
+    <div class="avatar-wrapper">
       <img :src="profile.avatar_url" :alt="profile.display_name" class="avatar" />
-      
-      <div class="info-content">
-        <div class="name-badge-row">
-          <h2 class="display-name">{{ profile.display_name || profile.username }}</h2>
-          <span v-if="profile.metrics_json?.personality_tag" class="personality-tag">
-            {{ profile.metrics_json.personality_tag }}
-          </span>
-        </div>
-        
-        <p class="username">@{{ profile.username }}</p>
-        
-        <p class="meta-joined">
-          🛰️ Joined GitHub in {{ formattedJoinedDate }} <span class="divider">•</span> {{ yearsOnGithub }} years active
-        </p>
-        
-        <p v-if="profile.bio" class="bio">{{ profile.bio }}</p>
-        
-        <!-- Details row (Location, Blog, Twitter) -->
-        <div class="details-row">
-          <div v-if="profile.location" class="detail-item">
-            <span class="detail-icon">📍</span>
-            <span>{{ profile.location }}</span>
-          </div>
-          <div v-if="profile.company" class="detail-item">
-            <span class="detail-icon">🏢</span>
-            <span>{{ profile.company }}</span>
-          </div>
-          <a v-if="profile.blog_url" :href="formatUrl(profile.blog_url)" target="_blank" class="detail-item link-item">
-            <span class="detail-icon">🔗</span>
-            <span>{{ cleanUrl(profile.blog_url) }}</span>
-          </a>
-          <a v-if="profile.twitter_username" :href="`https://twitter.com/${profile.twitter_username}`" target="_blank" class="detail-item link-item">
-            <span class="detail-icon">🐦</span>
-            <span>@{{ profile.twitter_username }}</span>
-          </a>
-        </div>
+    </div>
+    
+    <div class="name-container">
+      <h2 class="display-name">{{ profile.display_name || profile.username }}</h2>
+      <p class="username">{{ profile.username }}</p>
+    </div>
+    
+    <!-- Share Controls directly in Sidebar -->
+    <div class="share-actions-sidebar">
+      <button @click="$emit('share')" class="btn-sidebar btn-share">
+        🔗 Share Profile
+      </button>
+      <a :href="`/api/meta/og-image/${profile.username}`" target="_blank" class="btn-sidebar btn-preview">
+        🖼️ Social Card
+      </a>
+    </div>
+
+    <p v-if="profile.bio" class="bio">{{ profile.bio }}</p>
+    
+    <!-- Followers Count -->
+    <div class="followers-row">
+      <span class="followers-icon">👥</span>
+      <span class="followers-text">
+        <strong>{{ profile.follower_count }}</strong> followers 
+        <span class="divider-dot">•</span> 
+        <strong>{{ profile.following_count }}</strong> following
+      </span>
+    </div>
+    
+    <!-- Details List -->
+    <div class="details-list">
+      <div v-if="profile.company" class="detail-item">
+        <span class="detail-icon">🏢</span>
+        <span>{{ profile.company }}</span>
+      </div>
+      <div v-if="profile.location" class="detail-item">
+        <span class="detail-icon">📍</span>
+        <span>{{ profile.location }}</span>
+      </div>
+      <a v-if="profile.blog_url" :href="formatUrl(profile.blog_url)" target="_blank" class="detail-item link-item">
+        <span class="detail-icon">🔗</span>
+        <span class="link-text">{{ cleanUrl(profile.blog_url) }}</span>
+      </a>
+      <a v-if="profile.twitter_username" :href="`https://twitter.com/${profile.twitter_username}`" target="_blank" class="detail-item link-item">
+        <span class="detail-icon">🐦</span>
+        <span class="link-text">@{{ profile.twitter_username }}</span>
+      </a>
+      <div class="detail-item joined-date">
+        <span class="detail-icon">📅</span>
+        <span>Joined {{ formattedJoinedDate }}</span>
       </div>
     </div>
   </div>
@@ -53,18 +67,12 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['share'])
+
 const formattedJoinedDate = computed(() => {
   if (!props.profile.account_created_at) return ''
   const date = new Date(props.profile.account_created_at)
-  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-})
-
-const yearsOnGithub = computed(() => {
-  if (!props.profile.account_created_at) return 0
-  const created = new Date(props.profile.account_created_at)
-  const diff = Date.now() - created.getTime()
-  const years = diff / (1000 * 60 * 60 * 24 * 365.25)
-  return years.toFixed(1)
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 })
 
 const formatUrl = (url) => {
@@ -80,138 +88,155 @@ const cleanUrl = (url) => {
 </script>
 
 <style scoped>
-.profile-header-card {
-  background: var(--color-glass-fill);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--rounded-md);
-  padding: 2.5rem;
-  backdrop-filter: blur(12px);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.profile-header-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-}
-
-.header-main {
+.profile-sidebar {
   display: flex;
-  gap: 2.5rem;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  text-align: left;
+}
+
+.avatar-wrapper {
+  width: 100%;
+  max-width: 296px;
+  aspect-ratio: 1;
+  border-radius: var(--rounded-full);
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+  background-color: var(--color-surface-container);
+  margin-bottom: 16px;
 }
 
 .avatar {
-  width: 130px;
-  height: 130px;
-  border-radius: var(--rounded-full);
-  border: 3px solid var(--color-primary);
-  box-shadow: 0 0 25px rgba(221, 183, 255, 0.25);
-  transition: all 0.3s ease;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
-.avatar:hover {
-  transform: rotate(3deg) scale(1.05);
-  box-shadow: 0 0 35px rgba(221, 183, 255, 0.4);
-}
-
-.info-content {
-  flex: 1;
-  min-width: 280px;
-}
-
-.name-badge-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+.name-container {
+  padding: 16px 0;
+  border-bottom: none;
 }
 
 .display-name {
-  font-family: 'Quicksand', sans-serif;
-  font-size: 2.4rem;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.25;
   color: var(--color-on-surface);
-  line-height: 1.1;
-}
-
-.personality-tag {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 700;
-  background: rgba(255, 176, 205, 0.1);
-  border: 1px solid var(--color-tertiary);
-  color: var(--color-tertiary);
-  padding: 4px 14px;
-  border-radius: var(--rounded-full);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 
 .username {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.15rem;
-  color: var(--color-secondary);
-  margin-top: 0.25rem;
-  margin-bottom: 0.75rem;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 24px;
+  color: var(--color-on-surface-variant);
 }
 
-.meta-joined {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.95rem;
-  color: rgba(228, 225, 233, 0.5);
-  margin-bottom: 1.25rem;
+.share-actions-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.divider {
-  margin: 0 6px;
-  color: rgba(228, 225, 233, 0.2);
+.btn-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.1s ease;
+}
+
+.btn-share {
+  background-color: var(--color-surface-container-high);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-on-surface);
+}
+
+.btn-share:hover {
+  background-color: var(--color-surface-container-highest);
+  text-decoration: none;
+}
+
+.btn-preview {
+  background-color: transparent;
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-primary);
+}
+
+.btn-preview:hover {
+  background-color: var(--color-surface-container-high);
+  text-decoration: none;
 }
 
 .bio {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 1.05rem;
-  color: var(--color-on-surface-variant);
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-  max-width: 800px;
+  font-size: 14px;
+  color: var(--color-on-surface);
+  line-height: 1.5;
+  margin-bottom: 16px;
 }
 
-.details-row {
+.followers-row {
   display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 16px;
+}
+
+.followers-icon {
+  font-size: 14px;
+}
+
+.divider-dot {
+  margin: 0 4px;
+}
+
+.details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: 16px;
 }
 
 .detail-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.95rem;
-  color: var(--color-on-surface-variant);
-  text-decoration: none;
-  transition: color 0.2s ease;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-on-surface);
 }
 
 .detail-icon {
-  font-size: 1.1rem;
+  width: 16px;
+  text-align: center;
+  color: var(--color-on-surface-variant);
+  font-size: 14px;
 }
 
 .link-item {
-  color: var(--color-primary);
+  color: var(--color-on-surface);
 }
 
 .link-item:hover {
-  color: var(--color-on-surface);
-  text-decoration: underline;
+  color: var(--color-primary);
+}
+
+.link-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.joined-date {
+  color: var(--color-on-surface-variant);
 }
 </style>

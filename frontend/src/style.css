@@ -1,60 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Quicksand:wght@500;600;700&display=swap');
-
 :root {
-  /* Colors from DESIGN.md */
-  --color-background: #131318;
-  --color-on-background: #e4e1e9;
+  /* GitHub Dark Mode Color Palette */
+  --color-background: #0d1117;
+  --color-on-background: #e6edf3;
   
-  --color-surface: #131318;
-  --color-surface-dim: #131318;
-  --color-surface-bright: #39383e;
+  --color-surface: #0d1117;
+  --color-surface-dim: #0d1117;
+  --color-surface-bright: #21262d;
   
-  --color-surface-container-lowest: #0e0e13;
-  --color-surface-container-low: #1b1b20;
-  --color-surface-container: #1f1f25;
-  --color-surface-container-high: #2a292f;
-  --color-surface-container-highest: #35343a;
+  --color-surface-container-lowest: #010409;
+  --color-surface-container-low: #0d1117;
+  --color-surface-container: #161b22;
+  --color-surface-container-high: #21262d;
+  --color-surface-container-highest: #30363d;
   
-  --color-on-surface: #e4e1e9;
-  --color-on-surface-variant: #cfc2d6;
+  --color-on-surface: #e6edf3;
+  --color-on-surface-variant: #8d96a0;
   
-  --color-primary: #ddb7ff; /* Purple */
-  --color-on-primary: #490080;
-  --color-primary-container: #b76dff;
-  --color-on-primary-container: #400071;
+  --color-primary: #58a6ff;            /* GitHub Blue active accent */
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1f6feb;   /* Deep Blue */
+  --color-on-primary-container: #ffffff;
   
-  --color-secondary: #5de6ff; /* Cyan */
-  --color-on-secondary: #00363e;
-  --color-secondary-container: #00cbe6;
-  --color-on-secondary-container: #00515d;
+  --color-secondary: #2f81f7;          /* Link/action blue */
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #238636; /* GitHub Success Green */
+  --color-on-secondary-container: #ffffff;
   
-  --color-tertiary: #ffb0cd; /* Pink */
-  --color-on-tertiary: #640039;
-  --color-tertiary-container: #f751a1;
-  --color-on-tertiary-container: #570032;
+  --color-tertiary: #db61a2;           /* Package/tag pink */
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #bc8cff;  /* Purplish */
+  --color-on-tertiary-container: #1d003b;
   
-  --color-error: #ffb4ab;
-  --color-on-error: #690005;
-  --color-error-container: #93000a;
-  --color-on-error-container: #ffdad6;
+  --color-error: #f85149;
+  --color-on-error: #ffffff;
+  --color-error-container: #da3633;
+  --color-on-error-container: #ffffff;
   
-  --color-border-subtle: rgba(255, 255, 255, 0.08);
-  --color-glass-fill: rgba(255, 255, 255, 0.02);
+  --color-border-subtle: #30363d;       /* Standard GitHub dark border */
+  --color-glass-fill: #161b22;          /* Standard GitHub card fill */
   
-  /* Shapes */
-  --rounded-sm: 0.5rem;
-  --rounded-default: 1rem;
-  --rounded-md: 1.5rem;
-  --rounded-lg: 2rem;
-  --rounded-xl: 3rem;
+  /* Shapes - GitHub uses boxy 6px corners */
+  --rounded-sm: 6px;
+  --rounded-default: 6px;
+  --rounded-md: 6px;
+  --rounded-lg: 6px;
+  --rounded-xl: 6px;
   --rounded-full: 9999px;
   
   /* Spacing */
   --spacing-unit: 8px;
-  --spacing-gutter: 24px;
+  --spacing-gutter: 16px;
   --spacing-margin-mobile: 16px;
-  --spacing-margin-desktop: 48px;
-  --spacing-container-max: 1440px;
+  --spacing-margin-desktop: 32px;
+  --spacing-container-max: 1280px;
 }
 
 * {
@@ -66,23 +64,34 @@
 body {
   background-color: var(--color-background);
   color: var(--color-on-background);
-  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
   overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Quicksand', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   color: var(--color-on-surface);
-  font-weight: 700;
+  font-weight: 600;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
@@ -90,10 +99,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-surface-container-high);
-  border-radius: var(--rounded-sm);
+  background: var(--color-surface-container-highest);
+  border: 3px solid var(--color-surface-container-lowest);
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-surface-bright);
+  background: #565d64;
 }

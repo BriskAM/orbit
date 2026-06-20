@@ -135,33 +135,31 @@ const segments = computed(() => {
 
 <style scoped>
 .language-card {
-  background: var(--color-glass-fill);
+  background-color: var(--color-surface-container);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--rounded-md);
-  padding: 2rem;
-  backdrop-filter: blur(12px);
+  padding: 16px;
   height: 100%;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
 }
 
 .card-title {
-  font-family: 'Quicksand', sans-serif;
-  font-size: 1.4rem;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--color-on-surface);
-  margin-bottom: 1.5rem;
+  margin-bottom: 16px;
 }
 
 .chart-content {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  gap: 2rem;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
 .chart-container {
-  width: 200px;
-  height: 200px;
+  width: 160px;
+  height: 160px;
   position: relative;
 }
 
@@ -178,8 +176,7 @@ const segments = computed(() => {
 
 .donut-segment:hover,
 .segment-active {
-  stroke-width: 16;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.1));
+  stroke-width: 14;
 }
 
 .center-text {
@@ -190,15 +187,13 @@ const segments = computed(() => {
 }
 
 .center-percent {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   font-weight: 700;
-  fill: var(--color-secondary);
+  fill: var(--color-primary);
 }
 
 .center-label {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 7px;
+  font-size: 6px;
   font-weight: 600;
   fill: var(--color-on-surface-variant);
   letter-spacing: 0.05em;
@@ -207,18 +202,17 @@ const segments = computed(() => {
 
 .legend-container {
   flex: 1;
-  min-width: 180px;
+  min-width: 160px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: 'Be Vietnam Pro', sans-serif;
-  padding: 6px 12px;
+  gap: 8px;
+  padding: 4px 8px;
   border-radius: var(--rounded-sm);
   transition: all 0.2s ease;
   cursor: pointer;
@@ -226,27 +220,24 @@ const segments = computed(() => {
 
 .legend-item:hover,
 .legend-active {
-  background: var(--color-glass-fill);
-  transform: translateX(4px);
+  background: var(--color-surface-container-high);
 }
 
 .legend-color-dot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
 }
 
 .legend-name {
   flex: 1;
-  font-size: 0.95rem;
+  font-size: 13px;
   color: var(--color-on-surface);
 }
 
 .legend-percent {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--color-on-surface-variant);
 }
 </style>

@@ -1,41 +1,55 @@
 <template>
   <div class="repos-section">
-    <h3 class="section-title">Top Repositories</h3>
+    <div class="section-header">
+      <h3 class="section-title">Pinned</h3>
+    </div>
     
     <div class="repos-grid">
       <div v-for="repo in top6Repos" :key="repo.id" class="repo-card">
-        <div class="card-header">
-          <h4 class="repo-name">{{ repo.repo_name }}</h4>
-          <span v-if="repo.is_fork" class="fork-badge">Fork</span>
-        </div>
-        
-        <p v-if="repo.description" class="repo-desc">{{ repo.description }}</p>
-        <p v-else class="repo-desc no-desc">No description provided.</p>
-        
-        <!-- Topics -->
-        <div v-if="repo.topics && repo.topics.length" class="topics-row">
-          <span v-for="topic in repo.topics.slice(0, 3)" :key="topic" class="topic-chip">
-            #{{ topic }}
-          </span>
-        </div>
-
-        <div class="card-footer">
-          <div v-if="repo.primary_language" class="lang-item">
-            <div class="lang-dot" :style="{ backgroundColor: getLangColor(repo.primary_language) }"></div>
-            <span class="lang-text">{{ repo.primary_language }}</span>
-          </div>
-          <div v-else class="lang-item">
-            <div class="lang-dot" style="background-color: var(--color-on-surface-variant)"></div>
-            <span class="lang-text">Other</span>
+        <div class="card-top">
+          <div class="card-header-row">
+            <div class="repo-title-wrapper">
+              <!-- Book icon -->
+              <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" fill="currentColor" class="repo-icon">
+                <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path>
+              </svg>
+              <a :href="`https://github.com/${repo.full_name || repo.name}`" target="_blank" class="repo-name-link">
+                {{ repo.repo_name }}
+              </a>
+            </div>
+            <span class="visibility-badge">Public</span>
           </div>
           
-          <div class="stats-row">
-            <span class="stat-item" title="Stars">
-              ⭐ <span class="stat-num">{{ repo.stars }}</span>
-            </span>
-            <span class="stat-item" title="Forks">
-              🍴 <span class="stat-num">{{ repo.forks }}</span>
-            </span>
+          <p v-if="repo.description" class="repo-desc">{{ repo.description }}</p>
+          <p v-else class="repo-desc no-desc">No description provided.</p>
+        </div>
+        
+        <div class="card-footer">
+          <div class="footer-left">
+            <div v-if="repo.primary_language" class="lang-item">
+              <div class="lang-dot" :style="{ backgroundColor: getLangColor(repo.primary_language) }"></div>
+              <span class="lang-text">{{ repo.primary_language }}</span>
+            </div>
+            <div v-else class="lang-item">
+              <div class="lang-dot" style="background-color: var(--color-on-surface-variant)"></div>
+              <span class="lang-text">Other</span>
+            </div>
+            
+            <a v-if="repo.stars > 0" :href="`https://github.com/${repo.full_name || repo.name}/stargazers`" target="_blank" class="stat-item" title="Stars">
+              <!-- Star icon -->
+              <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" fill="currentColor" class="footer-icon">
+                <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
+              </svg>
+              <span class="stat-num">{{ repo.stars }}</span>
+            </a>
+            
+            <a v-if="repo.forks > 0" :href="`https://github.com/${repo.full_name || repo.name}/forks`" target="_blank" class="stat-item" title="Forks">
+              <!-- Fork icon -->
+              <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" fill="currentColor" class="footer-icon">
+                <path d="M5 3.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm0 2.122a2.25 2.25 0 1 0-1.5 0v.878A2.25 2.25 0 0 0 5.75 8.5h1.5v2.128a2.251 2.251 0 1 0 1.5 0V8.5h1.5A2.25 2.25 0 0 0 12.5 6.25v-.878a2.25 2.25 0 1 0-1.5 0v.878a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 5 6.25v-.878Zm3.75 7.378a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm3-8.5a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"></path>
+              </svg>
+              <span class="stat-num">{{ repo.forks }}</span>
+            </a>
           </div>
         </div>
       </div>
@@ -54,7 +68,6 @@ const props = defineProps({
 })
 
 const top6Repos = computed(() => {
-  // Take top 6 repositories (already pre-sorted by stars desc from the API)
   return props.repos.slice(0, 6)
 })
 
@@ -83,117 +96,114 @@ const getLangColor = (lang) => {
 
 <style scoped>
 .repos-section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 24px;
+}
+
+.section-header {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .section-title {
-  font-family: 'Quicksand', sans-serif;
-  font-size: 1.4rem;
+  font-size: 16px;
+  font-weight: 400;
   color: var(--color-on-surface);
-  margin-bottom: 1.5rem;
-  text-align: left;
 }
 
 .repos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+  gap: 16px;
 }
 
 .repo-card {
-  background: var(--color-glass-fill);
+  background-color: var(--color-surface-container);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--rounded-default);
-  padding: 1.5rem;
-  backdrop-filter: blur(12px);
+  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 190px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-height: 120px;
 }
 
-.repo-card:hover {
-  transform: scale(1.025) translateY(-2px);
-  border-color: var(--color-primary);
-  box-shadow: 0 10px 30px rgba(183, 109, 255, 0.12);
+.card-top {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.card-header {
+.card-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  gap: 8px;
 }
 
-.repo-name {
-  font-family: 'Quicksand', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
+.repo-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.repo-icon {
+  color: var(--color-on-surface-variant);
+  flex-shrink: 0;
+}
+
+.repo-name-link {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 80%;
 }
 
-.fork-badge {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 700;
-  background: rgba(93, 230, 255, 0.1);
-  border: 1px solid var(--color-secondary);
-  color: var(--color-secondary);
-  padding: 2px 8px;
-  border-radius: var(--rounded-full);
-  text-transform: uppercase;
+.repo-name-link:hover {
+  text-decoration: underline;
+}
+
+.visibility-badge {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 20px;
+  padding: 0 7px;
+  line-height: 18px;
 }
 
 .repo-desc {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.9rem;
+  font-size: 12px;
   color: var(--color-on-surface-variant);
   line-height: 1.5;
-  margin-bottom: 1.25rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex-grow: 1;
 }
 
 .no-desc {
-  color: rgba(228, 225, 233, 0.3);
+  color: rgba(141, 150, 160, 0.4);
   font-style: italic;
 }
 
-.topics-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 1.25rem;
-  flex-wrap: wrap;
-}
-
-.topic-chip {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: rgba(255, 176, 205, 0.08);
-  border: 1px solid rgba(255, 176, 205, 0.2);
-  color: var(--color-tertiary);
-  padding: 2px 10px;
-  border-radius: var(--rounded-full);
-}
-
 .card-footer {
+  margin-top: 16px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-top: 1px solid var(--color-border-subtle);
-  padding-top: 0.75rem;
-  margin-top: auto;
+  justify-content: space-between;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .lang-item {
@@ -203,33 +213,38 @@ const getLangColor = (lang) => {
 }
 
 .lang-dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
 }
 
 .lang-text {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.85rem;
+  font-size: 12px;
   color: var(--color-on-surface-variant);
-}
-
-.stats-row {
-  display: flex;
-  gap: 12px;
 }
 
 .stat-item {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  color: var(--color-on-surface-variant);
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.stat-item:hover {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.footer-icon {
+  color: var(--color-on-surface-variant);
+}
+
+.stat-item:hover .footer-icon {
+  color: var(--color-primary);
 }
 
 .stat-num {
-  font-weight: 700;
-  color: var(--color-on-surface);
+  font-size: 12px;
 }
 </style>

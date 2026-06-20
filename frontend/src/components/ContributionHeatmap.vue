@@ -1,9 +1,9 @@
 <template>
   <div class="heatmap-card">
     <div class="heatmap-header">
-      <h3 class="heatmap-title">Activity Grid</h3>
+      <h3 class="heatmap-title">Contributions in the last year</h3>
       <span class="total-badge">
-        {{ calendarData.totalContributions }} contributions last year
+        {{ calendarData.totalContributions }} contributions
       </span>
     </div>
     
@@ -11,10 +11,9 @@
       <div class="calendar-grid">
         <!-- Labels for days -->
         <div class="day-labels">
-          <span>Sun</span>
-          <span>Tue</span>
-          <span>Thu</span>
-          <span>Sat</span>
+          <span>Mon</span>
+          <span>Wed</span>
+          <span>Fri</span>
         </div>
         
         <!-- Grid columns representing weeks -->
@@ -37,11 +36,11 @@
     <div class="legend-row">
       <span class="legend-label">Less</span>
       <div class="legend-squares">
-        <div class="legend-square" style="background-color: #1b1b20"></div>
-        <div class="legend-square" style="background-color: rgba(93, 230, 255, 0.25)"></div>
-        <div class="legend-square" style="background-color: rgba(93, 230, 255, 0.55)"></div>
-        <div class="legend-square" style="background-color: rgba(93, 230, 255, 0.8)"></div>
-        <div class="legend-square" style="background-color: var(--color-secondary)"></div>
+        <div class="legend-square" style="background-color: #161b22"></div>
+        <div class="legend-square" style="background-color: #0e4429"></div>
+        <div class="legend-square" style="background-color: #006d32"></div>
+        <div class="legend-square" style="background-color: #26a641"></div>
+        <div class="legend-square" style="background-color: #39d353"></div>
       </div>
       <span class="legend-label">More</span>
     </div>
@@ -96,48 +95,39 @@ const hideTooltip = () => {
 }
 
 const getShadeColor = (count) => {
-  if (count === 0) return '#1b1b20'
-  if (count <= 3) return 'rgba(93, 230, 255, 0.25)'
-  if (count <= 7) return 'rgba(93, 230, 255, 0.55)'
-  if (count <= 12) return 'rgba(93, 230, 255, 0.8)'
-  return 'var(--color-secondary)' // Neon Cyan
+  if (count === 0) return '#161b22'
+  if (count <= 3) return '#0e4429'
+  if (count <= 7) return '#006d32'
+  if (count <= 12) return '#26a641'
+  return '#39d353'
 }
 </script>
 
 <style scoped>
 .heatmap-card {
-  background: var(--color-glass-fill);
+  background: transparent;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--rounded-md);
-  padding: 2rem;
-  backdrop-filter: blur(12px);
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  margin-bottom: 24px;
 }
 
 .heatmap-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .heatmap-title {
-  font-family: 'Quicksand', sans-serif;
-  font-size: 1.4rem;
+  font-size: 14px;
+  font-weight: 400;
   color: var(--color-on-surface);
 }
 
 .total-badge {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.85rem;
-  background: rgba(93, 230, 255, 0.1);
-  border: 1px solid var(--color-secondary);
-  color: var(--color-secondary);
-  padding: 4px 14px;
-  border-radius: var(--rounded-full);
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
 }
 
 .calendar-wrapper {
@@ -150,33 +140,32 @@ const getShadeColor = (count) => {
   height: 6px;
 }
 .calendar-wrapper::-webkit-scrollbar-thumb {
-  background: var(--color-surface-container-high);
+  background: var(--color-surface-container-highest);
   border-radius: var(--rounded-sm);
 }
 
 .calendar-grid {
   display: flex;
-  gap: 10px;
-  min-width: 750px;
-  justify-content: space-between;
+  gap: 12px;
+  min-width: 760px;
 }
 
 .day-labels {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 4px 0;
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.75rem;
-  color: rgba(228, 225, 233, 0.4);
+  padding: 14px 0 2px 0;
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
   text-align: left;
-  width: 30px;
+  width: 28px;
+  user-select: none;
 }
 
 .weeks-container {
   display: flex;
   flex: 1;
-  justify-content: space-between;
+  gap: 3px;
 }
 
 .week-column {
@@ -186,17 +175,16 @@ const getShadeColor = (count) => {
 }
 
 .day-square {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
   border-radius: 2px;
-  transition: transform 0.1s ease, filter 0.1s ease;
   cursor: pointer;
+  border: 1px solid rgba(27, 31, 35, 0.04);
 }
 
 .day-square:hover {
-  transform: scale(1.3);
   filter: brightness(1.2);
-  z-index: 10;
+  outline: 1px solid #ffffff;
 }
 
 .legend-row {
@@ -204,13 +192,12 @@ const getShadeColor = (count) => {
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 1rem;
+  margin-top: 12px;
 }
 
 .legend-label {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.75rem;
-  color: rgba(228, 225, 233, 0.4);
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
 }
 
 .legend-squares {
@@ -222,6 +209,7 @@ const getShadeColor = (count) => {
   width: 10px;
   height: 10px;
   border-radius: 2px;
+  border: 1px solid rgba(27, 31, 35, 0.04);
 }
 </style>
 
@@ -229,17 +217,16 @@ const getShadeColor = (count) => {
 <style>
 .heatmap-tooltip {
   position: absolute;
-  background: #1b1b20;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #161b22;
+  border: 1px solid var(--color-border-subtle);
   color: var(--color-on-surface);
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: var(--rounded-sm);
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.8rem;
+  font-size: 11px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   z-index: 9999;
-  width: 160px;
+  width: 170px;
   text-align: center;
   transform: translateY(-5px);
   animation: tooltip-fade 0.15s ease;
@@ -254,7 +241,7 @@ const getShadeColor = (count) => {
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid #1b1b20;
+  border-top: 5px solid var(--color-border-subtle);
 }
 
 @keyframes tooltip-fade {

@@ -123,31 +123,28 @@ const hideTooltip = () => {
 
 <style scoped>
 .pattern-card {
-  background: var(--color-glass-fill);
+  background-color: var(--color-surface-container);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--rounded-md);
-  padding: 2rem;
-  backdrop-filter: blur(12px);
-  margin-bottom: 2.5rem;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  margin-bottom: 24px;
 }
 
 .pattern-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 16px;
   text-align: left;
 }
 
 .pattern-title {
-  font-family: 'Quicksand', sans-serif;
-  font-size: 1.4rem;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--color-on-surface);
 }
 
 .pattern-subtitle {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.85rem;
+  font-size: 11px;
   color: var(--color-on-surface-variant);
-  margin-top: 0.25rem;
+  margin-top: 4px;
 }
 
 .grid-wrapper {
@@ -160,12 +157,12 @@ const hideTooltip = () => {
   height: 6px;
 }
 .grid-wrapper::-webkit-scrollbar-thumb {
-  background: var(--color-surface-container-high);
+  background: var(--color-surface-container-highest);
   border-radius: var(--rounded-sm);
 }
 
 .heatmap-grid {
-  min-width: 720px;
+  min-width: 600px;
 }
 
 .hours-header {
@@ -174,7 +171,7 @@ const hideTooltip = () => {
 }
 
 .hour-label-spacer {
-  width: 45px;
+  width: 40px;
 }
 
 .hours-labels {
@@ -182,15 +179,14 @@ const hideTooltip = () => {
   display: grid;
   grid-template-columns: repeat(24, 1fr);
   text-align: center;
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.75rem;
-  color: rgba(228, 225, 233, 0.4);
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
 }
 
 .grid-body {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .grid-row {
@@ -199,11 +195,10 @@ const hideTooltip = () => {
 }
 
 .row-label {
-  width: 45px;
+  width: 40px;
   text-align: left;
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.8rem;
-  color: rgba(228, 225, 233, 0.4);
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
   font-weight: 500;
 }
 
@@ -211,33 +206,30 @@ const hideTooltip = () => {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(24, 1fr);
-  gap: 4px;
+  gap: 3px;
 }
 
 .time-cell {
   aspect-ratio: 1;
   border-radius: 2px;
-  transition: transform 0.1s ease, filter 0.1s ease;
   cursor: pointer;
 }
 
 .time-cell:hover {
-  transform: scale(1.3);
   filter: brightness(1.2);
-  z-index: 10;
+  outline: 1px solid #ffffff;
 }
 </style>
 
 <style>
 .pattern-tooltip {
   position: absolute;
-  background: #1b1b20;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #161b22;
+  border: 1px solid var(--color-border-subtle);
   color: var(--color-on-surface);
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: var(--rounded-sm);
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.8rem;
+  font-size: 11px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   z-index: 9999;
