@@ -24,6 +24,9 @@ def create_app(config_class=Config):
     from backend.app.api.profile import profile_bp
     app.register_blueprint(profile_bp)
     
+    from backend.app.api.meta import meta_bp
+    app.register_blueprint(meta_bp)
+    
     # Automatically create tables for ease of development
     with app.app_context():
         try:

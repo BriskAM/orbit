@@ -1,10 +1,19 @@
 <template>
   <div class="profile-container">
-    <!-- Back Button -->
+    <!-- Back Button & Share Controls -->
     <div class="navigation-bar">
       <router-link to="/" class="back-button">
         ← Back to Search
       </router-link>
+      
+      <div class="share-actions" v-if="profile">
+        <button @click="copyProfileLink" class="share-button">
+          <span class="share-icon">🔗</span> Share Profile
+        </button>
+        <a :href="`/api/meta/og-image/${props.username}`" target="_blank" class="preview-card-link">
+          <span class="share-icon">🖼️</span> Social Card
+        </a>
+      </div>
     </div>
 
     <!-- Loading State -->
@@ -75,7 +84,7 @@
           </div>
         </div>
 
-        <!-- Coding Personality Card -->
+        <!-- Coding Personality Card (Glowing Frame) -->
         <div class="mid-col">
           <div class="personality-glow-card">
             <h3 class="personality-title">Coding Persona</h3>
@@ -106,6 +115,16 @@
         </div>
       </div>
 
+      <!-- Commit Patterns & Star History Growth -->
+      <div class="charts-layout-row" v-if="profile.metrics">
+        <div class="chart-col">
+          <CommitTimePattern :commit-time-matrix="profile.metrics.commit_time_matrix" />
+        </div>
+        <div class="chart-col">
+          <StarHistoryChart :star-history="profile.metrics.star_history" />
+        </div>
+      </div>
+
       <!-- Top Repositories Grid -->
       <TopReposGrid v-if="profile.repos && profile.repos.length" :repos="profile.repos" />
 
@@ -120,6 +139,13 @@
         </div>
       </div>
     </div>
+
+    <!-- Toast Notification Teleport -->
+    <Teleport to="body">
+      <div v-if="toast.visible" class="toast-notification">
+        {{ toast.message }}
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -134,6 +160,8 @@ import StatCard from '../components/StatCard.vue'
 import ContributionHeatmap from '../components/ContributionHeatmap.vue'
 import LanguageDonut from '../components/LanguageDonut.vue'
 import TopReposGrid from '../components/TopReposGrid.vue'
+import CommitTimePattern from '../components/CommitTimePattern.vue'
+import StarHistoryChart from '../components/StarHistoryChart.vue'
 
 const props = defineProps({
   username: {
@@ -145,6 +173,29 @@ const props = defineProps({
 const store = useProfileStore()
 const { profile, loading, error } = storeToRefs(store)
 const showRawJson = ref(false)
+
+// Toast State
+const toast = ref({
+  visible: false,
+  message: ''
+})
+
+const copyProfileLink = async () => {
+  try {
+    await navigator.clipboard.writeText(window.location.href)
+    showToast("Profile link copied to clipboard!")
+  } catch (err) {
+    showToast("Failed to copy link.")
+  }
+}
+
+const showToast = (msg) => {
+  toast.value.message = msg
+  toast.value.visible = true
+  setTimeout(() => {
+    toast.value.visible = false
+  }, 3000)
+}
 
 const loadData = () => {
   if (props.username) {
@@ -164,8 +215,10 @@ watch(() => props.username, loadData)
 }
 
 .navigation-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
-  text-align: left;
 }
 
 .back-button {
@@ -186,6 +239,34 @@ watch(() => props.username, loadData)
   border-color: var(--color-primary);
   background: rgba(221, 183, 255, 0.1);
   transform: translateX(-4px);
+}
+
+.share-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.share-button, .preview-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--color-glass-fill);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-on-surface);
+  padding: 10px 20px;
+  border-radius: var(--rounded-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.share-button:hover, .preview-card-link:hover {
+  border-color: var(--color-secondary);
+  background: rgba(93, 230, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 /* Loading State */
@@ -311,20 +392,36 @@ watch(() => props.username, loadData)
   backdrop-filter: blur(12px);
 }
 
-/* Coding Persona Card */
+/* Coding Persona Card (Glowing Spotify Wrapped-style frame) */
 .personality-glow-card {
-  background: var(--color-glass-fill);
+  background: rgba(27, 27, 32, 0.6);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--rounded-md);
-  padding: 2rem;
-  backdrop-filter: blur(12px);
+  padding: 2.25rem;
+  backdrop-filter: blur(16px);
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
   position: relative;
-  overflow: hidden;
+  z-index: 1;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+}
+
+.personality-glow-card::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-tertiary), var(--color-secondary));
+  border-radius: calc(var(--rounded-md) + 2px);
+  z-index: -2;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.personality-glow-card:hover::before {
+  opacity: 1;
+  filter: drop-shadow(0 0 15px rgba(221, 183, 255, 0.4));
 }
 
 .personality-glow-card::after {
@@ -332,11 +429,12 @@ watch(() => props.username, loadData)
   position: absolute;
   bottom: -40px;
   right: -40px;
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, rgba(255, 176, 205, 0.1) 0%, rgba(0,0,0,0) 70%);
-  filter: blur(20px);
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255, 176, 205, 0.15) 0%, rgba(0,0,0,0) 70%);
+  filter: blur(25px);
   pointer-events: none;
+  z-index: -1;
 }
 
 .personality-title {
@@ -348,11 +446,15 @@ watch(() => props.username, loadData)
 
 .personality-value {
   font-family: 'Quicksand', sans-serif;
-  font-size: 2.1rem;
+  font-size: 2.8rem;
   font-weight: 700;
-  color: var(--color-tertiary);
+  background: linear-gradient(135deg, var(--color-tertiary) 0%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
-  line-height: 1.2;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 30px rgba(255, 176, 205, 0.15);
 }
 
 .personality-desc {
@@ -386,6 +488,46 @@ watch(() => props.username, loadData)
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
   color: var(--color-on-surface);
+}
+
+/* Charts grid styling */
+.charts-layout-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.chart-col {
+  height: 100%;
+}
+
+/* Toast alert styling */
+.toast-notification {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: rgba(19, 19, 24, 0.9);
+  border: 1px solid var(--color-secondary);
+  color: var(--color-on-surface);
+  padding: 12px 24px;
+  border-radius: var(--rounded-md);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 30px rgba(0, 203, 230, 0.25);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  animation: toast-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes toast-slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* Raw Data Section */

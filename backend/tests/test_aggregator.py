@@ -2,9 +2,9 @@ from backend.app.services.aggregator import calculate_metrics, derive_personalit
 
 def test_calculate_metrics_basic():
     repos = [
-        {"name": "repo1", "full_name": "owner/repo1", "stargazers_count": 10, "forks_count": 2, "fork": False},
-        {"name": "repo2", "full_name": "owner/repo2", "stargazers_count": 20, "forks_count": 5, "fork": False},
-        {"name": "repo3-fork", "full_name": "owner/repo3-fork", "stargazers_count": 100, "forks_count": 1, "fork": True},
+        {"name": "repo1", "full_name": "owner/repo1", "stargazers_count": 10, "forks_count": 2, "fork": False, "created_at": "2026-01-15T12:00:00Z"},
+        {"name": "repo2", "full_name": "owner/repo2", "stargazers_count": 20, "forks_count": 5, "fork": False, "created_at": "2026-02-10T08:30:00Z"},
+        {"name": "repo3-fork", "full_name": "owner/repo3-fork", "stargazers_count": 100, "forks_count": 1, "fork": True, "created_at": "2026-03-01T15:00:00Z"},
     ]
     languages = {
         "owner/repo1": {"Python": 1000, "JavaScript": 500},
@@ -18,6 +18,11 @@ def test_calculate_metrics_basic():
     assert metrics["most_starred_repo"] == "repo2"
     assert metrics["top_language"] == "Python"
     assert metrics["language_breakdown"]["Python"] == 75.0
+    
+    # Verify star history growth list
+    assert len(metrics["star_history"]) == 2
+    assert metrics["star_history"][0] == {"date": "2026-01", "stars": 10}
+    assert metrics["star_history"][1] == {"date": "2026-02", "stars": 30}
 
 def test_streaks_and_bucketing():
     # Mock calendar data
@@ -80,6 +85,16 @@ def test_commit_times_and_personality():
     assert metrics["commit_hour_histogram"][0] == 1
     assert metrics["commit_hour_histogram"][6] == 1
     assert metrics["commit_hour_histogram"][14] == 1
+    
+    # Verify 7x24 commit time matrix
+    assert len(metrics["commit_time_matrix"]) == 7
+    assert all(len(row) == 24 for row in metrics["commit_time_matrix"])
+    # 2026-06-20 is a Saturday (our_wday = 6)
+    assert metrics["commit_time_matrix"][6][23] == 1
+    assert metrics["commit_time_matrix"][6][22] == 1
+    assert metrics["commit_time_matrix"][6][0] == 1
+    assert metrics["commit_time_matrix"][6][14] == 1
+    assert metrics["commit_time_matrix"][6][6] == 1
     
     # Heuristic matching: Night Owl ratio >= 0.45 and < 5 languages -> Obsessive Night Owl
     assert metrics["personality_tag"] == "Obsessive Night Owl"

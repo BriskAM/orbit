@@ -1,5 +1,21 @@
 from datetime import datetime
 
+def get_commit_weekday_and_hour(ts):
+    """
+    Parses a commit ISO timestamp and returns (weekday_sun_sat, local_hour).
+    Maps Python's weekday (0=Mon, 6=Sun) to our standard (0=Sun, 6=Sat).
+    """
+    if not ts or 'T' not in ts:
+        return None, None
+    try:
+        clean_ts = ts.replace('Z', '+00:00')
+        dt = datetime.fromisoformat(clean_ts)
+        py_wday = dt.weekday()
+        our_wday = (py_wday + 1) % 7
+        return our_wday, dt.hour
+    except Exception:
+        return None, None
+
 def calculate_metrics(repos_data, languages_by_repo, calendar_data=None, commit_timestamps=None):
     """
     Calculates aggregated metrics from repository list, language breakdowns,
@@ -12,29 +28,34 @@ def calculate_metrics(repos_data, languages_by_repo, calendar_data=None, commit_
         "language_breakdown": {},
         "top_language": None,
         
-        # Day 3 metrics placeholders
+        # Streaks
         "current_streak": 0,
         "longest_streak": 0,
-        "weekday_activity": [0] * 7, # Sun (0) to Sat (6)
-        "month_activity": [0] * 12,   # Jan (0) to Dec (11)
-        "commit_hour_histogram": [0] * 24, # 0 to 23
+        "current_streak_days": 0,
+        "longest_streak_days": 0,
+        "weekday_activity": [0] * 7,
+        "month_activity": [0] * 12,
+        
+        # Commit patterns & times
+        "commit_hour_histogram": [0] * 24,
+        "commit_time_matrix": [[0] * 24 for _ in range(7)], # Sun-Sat × 24h
         "night_owl_ratio": 0.0,
         "early_bird_ratio": 0.0,
-        "personality_tag": "Pragmatic Developer"
+        "personality_tag": "Pragmatic Developer",
+        
+        # Star history growth curve
+        "star_history": []
     }
     
     if not repos_data:
         return metrics
         
-    # Helper to check if repository is a fork
     def is_repo_fork(r):
         return r.get('fork', r.get('isFork', False))
         
-    # Helper to get stars
     def get_repo_stars(r):
         return r.get('stargazers_count', r.get('stargazerCount', 0))
         
-    # Helper to get forks
     def get_repo_forks(r):
         return r.get('forks_count', r.get('forkCount', 0))
 
@@ -68,9 +89,32 @@ def calculate_metrics(repos_data, languages_by_repo, calendar_data=None, commit_
         metrics["language_breakdown"] = sorted_breakdown
         metrics["top_language"] = max(total_bytes_by_lang, key=total_bytes_by_lang.get)
         
-    # --- Day 3 Calculations ---
+    # Calculate star history chronologically
+    repo_dates = []
+    for r in owned_repos:
+        date_str = r.get('created_at', r.get('createdAt'))
+        if date_str:
+            try:
+                date_part = date_str.split('T')[0]
+                repo_dates.append((date_part, get_repo_stars(r)))
+            except Exception:
+                pass
+                
+    repo_dates_sorted = sorted(repo_dates, key=lambda x: x[0])
     
-    # 1. Compute streaks and calendar activity from contribution calendar
+    star_history = []
+    running_stars = 0
+    for d, stars in repo_dates_sorted:
+        running_stars += stars
+        ym = d[:7] # YYYY-MM
+        if star_history and star_history[-1]["date"] == ym:
+            star_history[-1]["stars"] = running_stars
+        else:
+            star_history.append({"date": ym, "stars": running_stars})
+            
+    metrics["star_history"] = star_history
+    
+    # Compute streaks and calendar activity
     if calendar_data:
         weeks = calendar_data.get("weeks", [])
         days = []
@@ -78,10 +122,8 @@ def calculate_metrics(repos_data, languages_by_repo, calendar_data=None, commit_
             for d in w.get("contributionDays", []):
                 days.append(d)
         
-        # Sort chronologically by date
         days = sorted(days, key=lambda x: x.get("date", ""))
         
-        # Streaks
         longest = 0
         current = 0
         for d in days:
@@ -92,8 +134,8 @@ def calculate_metrics(repos_data, languages_by_repo, calendar_data=None, commit_
                 current = 0
                 
         metrics["longest_streak"] = longest
+        metrics["longest_streak_days"] = longest
         
-        # Current streak logic walking backwards
         last_active_idx = -1
         if days:
             if days[-1].get("contributionCount", 0) > 0:
@@ -109,20 +151,17 @@ def calculate_metrics(repos_data, languages_by_repo, calendar_data=None, commit_
                     else:
                         break
                 metrics["current_streak"] = curr_run
+                metrics["current_streak_days"] = curr_run
                 
-        # Weekday and Month activity bucketing
         for d in days:
             count = d.get("contributionCount", 0)
             if count > 0:
-                # Weekday
                 wday = d.get("weekday")
                 if wday is not None and 0 <= wday <= 6:
                     metrics["weekday_activity"][wday] += count
                     
-                # Month
                 date_str = d.get("date", "")
                 try:
-                    # format: "YYYY-MM-DD"
                     parts = date_str.split("-")
                     if len(parts) >= 2:
                         month_num = int(parts[1])
@@ -131,44 +170,35 @@ def calculate_metrics(repos_data, languages_by_repo, calendar_data=None, commit_
                 except Exception:
                     pass
                     
-    # 2. Analyze commit timestamps
+    # Analyze commit timestamps
     if commit_timestamps:
         total_sampled = 0
         night_commits = 0
         early_bird_commits = 0
         
         for ts in commit_timestamps:
-            if not ts or 'T' not in ts:
-                continue
-            try:
-                # Extract local hour directly after 'T' (e.g. '2026-06-20T10:47:51+05:30' -> hour 10)
-                time_part = ts.split('T')[1]
-                hour = int(time_part[:2])
-                if 0 <= hour <= 23:
-                    metrics["commit_hour_histogram"][hour] += 1
-                    total_sampled += 1
-                    # Night Owl: 10 PM (22) to 4 AM (4)
-                    if hour >= 22 or hour <= 4:
-                        night_commits += 1
-                    # Early Bird: 5 AM (5) to 9 AM (9)
-                    elif 5 <= hour <= 9:
-                        early_bird_commits += 1
-            except Exception:
-                pass
+            wday, hour = get_commit_weekday_and_hour(ts)
+            if wday is not None and hour is not None:
+                metrics["commit_hour_histogram"][hour] += 1
+                metrics["commit_time_matrix"][wday][hour] += 1
+                total_sampled += 1
+                
+                # Night Owl: 10 PM (22) to 4 AM (4)
+                if hour >= 22 or hour <= 4:
+                    night_commits += 1
+                # Early Bird: 5 AM (5) to 9 AM (9)
+                elif 5 <= hour <= 9:
+                    early_bird_commits += 1
                 
         if total_sampled > 0:
             metrics["night_owl_ratio"] = round(night_commits / total_sampled, 3)
             metrics["early_bird_ratio"] = round(early_bird_commits / total_sampled, 3)
             
-    # 3. Derive personality tag
     metrics["personality_tag"] = derive_personality_tag(metrics)
     
     return metrics
 
 def derive_personality_tag(metrics):
-    """
-    Heuristic rule engine to classify developer coding personality.
-    """
     lang_count = len(metrics.get("language_breakdown", {}))
     night_owl = metrics.get("night_owl_ratio", 0.0)
     early_bird = metrics.get("early_bird_ratio", 0.0)
