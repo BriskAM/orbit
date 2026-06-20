@@ -83,8 +83,8 @@ def save_profile_to_cache(username, profile_raw, repos_raw, metrics, languages_b
         # Populate aggregated metrics
         profile.total_stars_earned = metrics.get('total_stars_earned', 0)
         profile.total_forks_received = metrics.get('total_forks_received', 0)
-        profile.longest_streak_days = metrics.get('longest_streak_days', 0)
-        profile.current_streak_days = metrics.get('current_streak_days', 0)
+        profile.longest_streak_days = metrics.get('longest_streak_days', metrics.get('longest_streak', 0))
+        profile.current_streak_days = metrics.get('current_streak_days', metrics.get('current_streak', 0))
         profile.top_language = metrics.get('top_language')
         profile.language_breakdown = metrics.get('language_breakdown', {})
         profile.metrics_json = metrics

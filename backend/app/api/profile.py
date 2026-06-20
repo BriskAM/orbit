@@ -2,7 +2,7 @@ import time
 from datetime import datetime, timezone
 from flask import Blueprint, jsonify, current_app
 from backend.app.services.github_graphql import fetch_github_profile_raw
-from backend.app.services.github_rest import fetch_user_repos, fetch_repo_languages
+from backend.app.services.github_rest import fetch_user_repos, fetch_repo_languages, fetch_recent_commits
 from backend.app.services.aggregator import calculate_metrics
 from backend.app.services.cache_service import get_cached_profile, save_profile_to_cache
 from backend.app.models.repo_snapshot import RepoSnapshot
@@ -87,8 +87,26 @@ def get_profile(username):
                 languages_by_repo[r['full_name']] = fetch_repo_languages(owner, name)
                 api_calls += 1
                 
+        # D. Fetch recent commits for top 5 owned repositories to analyze patterns
+        owned_repos = [r for r in repos_raw if not r.get('fork', False)]
+        owned_repos_sorted = sorted(owned_repos, key=lambda r: r.get('stargazers_count', 0), reverse=True)
+        top_5_repos = owned_repos_sorted[:5]
+        
+        commit_timestamps = []
+        for r in top_5_repos:
+            owner = r.get('owner', {}).get('login')
+            name = r.get('name')
+            if owner and name:
+                commits = fetch_recent_commits(owner, name, username_lower)
+                api_calls += 1
+                for c in commits:
+                    date_str = c.get('commit', {}).get('author', {}).get('date')
+                    if date_str:
+                        commit_timestamps.append(date_str)
+                        
         # 3. Aggregate metrics
-        metrics = calculate_metrics(repos_raw, languages_by_repo)
+        calendar_data = graphql_data.get("contributionsCollection", {}).get("contributionCalendar", {})
+        metrics = calculate_metrics(repos_raw, languages_by_repo, calendar_data, commit_timestamps)
         
         # 4. Save to cache
         cached_profile = save_profile_to_cache(

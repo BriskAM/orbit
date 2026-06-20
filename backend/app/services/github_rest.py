@@ -70,3 +70,24 @@ def fetch_repo_languages(owner, repo_name):
         return {}
         
     return response.json()
+
+def fetch_recent_commits(owner, repo_name, username):
+    """
+    Fetches up to 30 recent commits authored by the specified user in a repository.
+    Returns a list of commit dictionaries or an empty list on failure.
+    """
+    headers = get_auth_headers()
+    url = f"https://api.github.com/repos/{owner}/{repo_name}/commits?author={username}&per_page=30"
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+    except requests.exceptions.RequestException as e:
+        current_app.logger.warning(f"Failed to fetch commits for {owner}/{repo_name}: {e}")
+        return []
+        
+    if response.status_code != 200:
+        current_app.logger.warning(
+            f"GitHub commits API returned status {response.status_code} for {owner}/{repo_name}"
+        )
+        return []
+        
+    return response.json()
