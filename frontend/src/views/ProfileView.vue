@@ -169,10 +169,10 @@
                   </div>
                 </div>
                 <div class="repo-row-right">
-                  <button class="github-star-mock-btn" style="display: flex; align-items: center; gap: 4px;">
-                    <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="12" height="12" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97 1.9 4.167a.75.75 0 0 1-1.087.79L8 11.777l-3.766 1.98a.75.75 0 0 1-1.087-.79l1.9-4.167L1.001 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Zm0 2.445L6.615 5.5a.75.75 0 0 1-.564.41l-3.097.45 2.24 2.184a.75.75 0 0 1 .216.664l-.528 3.084 2.769-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.53-3.084a.75.75 0 0 1 .216-.664l2.24-2.183-3.096-.45a.75.75 0 0 1-.564-.41L8 2.695Z"></path></svg>
-                    Star
-                  </button>
+                  <a :href="`https://github.com/${repo.full_name || repo.name}`" target="_blank" class="repo-visit-btn" style="display: inline-flex; align-items: center; gap: 4px;">
+                    <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="12" height="12" aria-hidden="true" fill="currentColor"><path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854.646a.5.5 0 0 1 .146-.354h3.5a.5.5 0 0 1 .5.5v3.5a.5.5 0 0 1-.854.354L12.5 5.793l-4.146 4.147a.5.5 0 0 1-.708 0l-.707-.707a.5.5 0 0 1 0-.708L11.086 4.25l-.832-.832a.5.5 0 0 1-.354-.146Z"></path></svg>
+                    View Repo
+                  </a>
                 </div>
               </div>
             </div>
@@ -656,20 +656,24 @@ watch(() => props.username, loadData)
   border-radius: 50%;
 }
 
-.github-star-mock-btn {
+.repo-visit-btn {
   background-color: var(--color-surface-container-high);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--rounded-sm);
   color: var(--color-on-surface);
-  padding: 3px 12px;
+  padding: 4px 12px;
   font-size: 12px;
   font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
+  transition: all 0.1s ease;
 }
 
-.github-star-mock-btn:hover {
+.repo-visit-btn:hover {
   background-color: var(--color-surface-container-highest);
+  color: var(--color-primary);
+  text-decoration: none;
 }
 
 /* Analytics Tab Content */

@@ -1,5 +1,6 @@
-from flask import Blueprint, Response, current_app
+from flask import Blueprint, Response, current_app, jsonify
 from backend.app.models.profile import CachedProfile
+from backend.app.models.repo_snapshot import RepoSnapshot
 from backend.app.services.og_image_service import generate_og_image_svg
 from backend.app.services.github_graphql import fetch_github_profile_raw
 from backend.app.services.github_rest import fetch_user_repos, fetch_repo_languages
@@ -77,3 +78,73 @@ def get_og_image(username):
             mimetype="image/svg+xml",
             status=500
         )
+
+@meta_bp.route('/api/meta/stats', methods=['GET'])
+def get_global_stats():
+    """
+    Returns aggregated stats across all analyzed profiles in the Orbit system.
+    """
+    try:
+        profiles = CachedProfile.query.all()
+        total_profiles = len(profiles)
+        
+        if total_profiles == 0:
+            # Return elegant default base metrics if no database records exist yet
+            return jsonify({
+                "total_profiles": 0,
+                "total_repos": 0,
+                "total_stars": 0,
+                "total_commits": 0,
+                "avg_repos": 0.0,
+                "top_languages": {},
+                "avg_night_owl_ratio": 0.0,
+                "avg_early_bird_ratio": 0.0,
+                "avg_longest_streak": 0.0
+            })
+            
+        total_stars = sum(p.total_stars_earned or 0 for p in profiles)
+        total_commits = sum(p.total_commits_last_year or 0 for p in profiles)
+        total_repos = RepoSnapshot.query.count()
+        avg_repos = round(total_repos / total_profiles, 1)
+        
+        languages = {}
+        night_owl_ratios = []
+        early_bird_ratios = []
+        longest_streaks = []
+        
+        for p in profiles:
+            if p.top_language:
+                lang = p.top_language.strip()
+                if lang:
+                    languages[lang] = languages.get(lang, 0) + 1
+            
+            longest_streaks.append(p.longest_streak_days or 0)
+            
+            m = p.metrics_json or {}
+            if 'night_owl_ratio' in m:
+                night_owl_ratios.append(m['night_owl_ratio'])
+            if 'early_bird_ratio' in m:
+                early_bird_ratios.append(m['early_bird_ratio'])
+                
+        avg_night_owl = round(sum(night_owl_ratios) / len(night_owl_ratios), 3) if night_owl_ratios else 0.0
+        avg_early_bird = round(sum(early_bird_ratios) / len(early_bird_ratios), 3) if early_bird_ratios else 0.0
+        avg_longest_streak = round(sum(longest_streaks) / len(longest_streaks), 1) if longest_streaks else 0.0
+        
+        # Sort languages by frequency descending
+        sorted_langs = dict(sorted(languages.items(), key=lambda item: item[1], reverse=True))
+        
+        return jsonify({
+            "total_profiles": total_profiles,
+            "total_repos": total_repos,
+            "total_stars": total_stars,
+            "total_commits": total_commits,
+            "avg_repos": avg_repos,
+            "top_languages": sorted_langs,
+            "avg_night_owl_ratio": avg_night_owl,
+            "avg_early_bird_ratio": avg_early_bird,
+            "avg_longest_streak": avg_longest_streak
+        })
+    except Exception as e:
+        current_app.logger.error(f"Error fetching global stats: {e}")
+        return jsonify({"error": str(e)}), 500
+
