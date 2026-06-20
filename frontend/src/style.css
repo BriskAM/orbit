@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 :root {
   /* GitHub Dark Mode Color Palette */
   --color-background: #0d1117;
@@ -39,6 +41,10 @@
   --color-border-subtle: #30363d;       /* Standard GitHub dark border */
   --color-glass-fill: #161b22;          /* Standard GitHub card fill */
   
+  /* Fonts */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace;
+  
   /* Shapes - GitHub uses boxy 6px corners */
   --rounded-sm: 6px;
   --rounded-default: 6px;
@@ -64,7 +70,7 @@
 body {
   background-color: var(--color-background);
   color: var(--color-on-background);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;

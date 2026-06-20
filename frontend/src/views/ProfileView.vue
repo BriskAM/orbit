@@ -9,7 +9,9 @@
     <!-- Error State -->
     <div v-else-if="error" class="error-state">
       <div class="error-card">
-        <div class="error-icon">⚠️</div>
+        <div class="error-icon">
+          <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="32" height="32" aria-hidden="true" fill="currentColor"><path d="M6.457 1.047c.66-1.08 2.226-1.08 2.886 0l6.3 10.31c.66 1.08-.22 2.483-1.443 2.483H1.8c-1.223 0-2.103-1.403-1.443-2.483l6.3-10.31ZM8 1.92l-6.3 10.31a.243.243 0 0 0 .243.37h12.114a.243.243 0 0 0 .243-.37L8 1.92ZM8 5c.414 0 .75.336.75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 5Zm0 6a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"></path></svg>
+        </div>
         <h3>Analysis Failed</h3>
         <p>{{ error }}</p>
         <router-link to="/" class="retry-button">Try Another Username</router-link>
@@ -32,14 +34,18 @@
             class="tab-btn" 
             :class="{ 'active': currentTab === 'overview' }"
           >
-            <span class="tab-icon">📖</span> Overview
+            <span class="tab-icon">
+              <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501.683-.911 1.773-1.501 3-1.501h4.253a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.253c-1.046 0-2.02.4-2.747 1.127a.75.75 0 0 1-1.06 0A4.243 4.243 0 0 0 5.003 12H.75a.75.75 0 0 1-.75-.75V1.75Zm1.5 1.5v7.25c-.003.022.008.045.03.06a3.738 3.738 0 0 0 3.473-.31V2.75a2.738 2.738 0 0 0-3.503 0ZM14.5 3.25a2.738 2.738 0 0 0-3.503 0v7c1.378.1 2.656.704 3.503 1.61a.1.1 0 0 0 .03-.06V3.25Z"></path></svg>
+            </span> Overview
           </button>
           <button 
             @click="currentTab = 'repositories'" 
             class="tab-btn" 
             :class="{ 'active': currentTab === 'repositories' }"
           >
-            <span class="tab-icon">📁</span> Repositories
+            <span class="tab-icon">
+              <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.25.25 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path></svg>
+            </span> Repositories
             <span class="tab-badge" v-if="profile.repos">{{ profile.repos.length }}</span>
           </button>
           <button 
@@ -47,14 +53,18 @@
             class="tab-btn" 
             :class="{ 'active': currentTab === 'analytics' }"
           >
-            <span class="tab-icon">📊</span> Analytics
+            <span class="tab-icon">
+              <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M1.5 1.75V13.5h13a.75.75 0 0 1 0 1.5H.75a.75.75 0 0 1-.75-.75V1.75a.75.75 0 0 1 1.5 0Zm4 5.5a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-6a.75.75 0 0 1-.75-.75v-4.5Zm1.5.75v3h4.5v-3h-4.5Z"></path></svg>
+            </span> Analytics
           </button>
           <button 
             @click="currentTab = 'devmode'" 
             class="tab-btn" 
             :class="{ 'active': currentTab === 'devmode' }"
           >
-            <span class="tab-icon">🛠️</span> Dev Mode
+            <span class="tab-icon">
+              <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M14.7 1.3a1.25 1.25 0 0 0-1.77 0L9.23 5.00H6.77L2.8 1.03a1.25 1.25 0 0 0-1.77 0L.03 2.03a1.25 1.25 0 0 0 0 1.77L4.00 7.77v2.46L.3 13.93a1.25 1.25 0 0 0 0 1.77l1 1a1.25 1.25 0 0 0 1.77 0L6.77 13h2.46l3.97 3.97a1.25 1.25 0 0 0 1.77 0l1-1a1.25 1.25 0 0 0 0-1.77L12 10.23V7.77l3.7-3.7a1.25 1.25 0 0 0 0-1.77ZM11 9.23v1.54l3.25 3.25-.75.75L10.25 11H8.77l-4.5 4.5-.75-.75 4.5-4.5H6.46L3.21 7H1.67L1 6.33V4.67L2.67 3l3.33 3.33h1.54l3.25-3.25h1.54Z"></path></svg>
+            </span> Dev Mode
           </button>
         </div>
 
@@ -82,23 +92,33 @@
                   
                   <div class="readme-persona-stats">
                     <div class="readme-p-stat">
-                      <span class="p-bullet">🦉</span>
+                      <span class="p-bullet-svg">
+                        <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M9.598 1.591a.75.75 0 0 1 .785-.175 7 7 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Z"></path></svg>
+                      </span>
                       <span>Night Commit Ratio: <strong>{{ (profile.metrics.night_owl_ratio * 100).toFixed(1) }}%</strong></span>
                     </div>
                     <div class="readme-p-stat">
-                      <span class="p-bullet">🌅</span>
+                      <span class="p-bullet-svg">
+                        <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M8 10.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-8a.75.75 0 0 1-.75-.75V1.75a.75.75 0 0 1 1.5 0V3.25A.75.75 0 0 1 8 4Zm0 8.75a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 .75-.75ZM4.22 4.22a.75.75 0 0 1 1.06 0l1.06 1.06a.75.75 0 0 1-1.06 1.06L4.22 5.28a.75.75 0 0 1 0-1.06Zm6.36 6.36a.75.75 0 0 1 1.06 0l1.06 1.06a.75.75 0 0 1-1.06 1.06l-1.06-1.06a.75.75 0 0 1 0-1.06Zm-7.83 1.48a.75.75 0 0 1 0 1.06l-1.06 1.06a.75.75 0 0 1-1.06-1.06l1.06-1.06a.75.75 0 0 1 1.06 0Zm11.31-7.83a.75.75 0 0 1 0 1.06l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.06-1.06a.75.75 0 0 1 1.06 0ZM4 8a.75.75 0 0 1-.75.75H1.75a.75.75 0 0 1 0-1.5H3.25A.75.75 0 0 1 4 8Zm10.5 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75Z"></path></svg>
+                      </span>
                       <span>Early Bird Ratio: <strong>{{ (profile.metrics.early_bird_ratio * 100).toFixed(1) }}%</strong></span>
                     </div>
                     <div class="readme-p-stat">
-                      <span class="p-bullet">🔥</span>
+                      <span class="p-bullet-svg">
+                        <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M8 0c-.22 0-.41.1-.55.27-.4.5-.78 1.06-1.08 1.6-.28.48-.56.97-.8 1.46-.78.43-1.48.98-2 1.64C3.02 5.64 2.75 6.42 2.75 7.25c0 2.62 2.13 4.75 4.75 4.75s4.75-2.13 4.75-4.75c0-.83-.27-1.61-.82-2.28-.52-.66-1.22-1.21-2-1.64-.24-.49-.52-.98-.8-1.46-.3-.54-.68-1.1-1.08-1.6C8.41.1 8.22 0 8 0Zm0 1.9c.29.38.58.78.85 1.18.25.37.49.75.72 1.13.43.26.82.59 1.13.98.39.49.55 1.04.55 1.56 0 1.79-1.46 3.25-3.25 3.25S4.75 8.54 4.75 6.75c0-.52.16-1.07.55-1.56.31-.39.7-.72 1.13-.98.23-.38.47-.76.72-1.13.27-.4.56-.8.85-1.18Zm0 2.35c.97 0 1.75.78 1.75 1.75s-.78 1.75-1.75 1.75-1.75-.78-1.75-1.75.78-1.75 1.75-1.75Z"></path></svg>
+                      </span>
                       <span>Current Streak: <strong>{{ profile.metrics.current_streak }}</strong> days</span>
                     </div>
                     <div class="readme-p-stat">
-                      <span class="p-bullet">🏆</span>
+                      <span class="p-bullet-svg">
+                        <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M2.75 1.5a.25.25 0 0 0-.25.25V3c0 .591.242 1.124.63 1.508.067.067.139.13.216.188C3.766 5.568 4.773 6 6 6h1v1.624c-.958.172-1.782.686-2.302 1.4A3.992 3.992 0 0 0 4 12.25c0 .414.336.75.75.75h6.5a.75.75 0 0 0 .75-.75c0-1.282-.605-2.42-1.562-3.149a4.02 4.02 0 0 0-2.438-1.477V6h1c1.227 0 2.234-.432 2.654-1.304a2.237 2.237 0 0 0 .216-.188C13.508 4.124 13.75 3.59 13.75 3V1.75a.25.25 0 0 0-.25-.25H2.75ZM11.25 3v.004c0 .428-.158.749-.402.973-.24.22-.587.398-1.098.473L9.5 4.486V3h1.75ZM6.5 3v1.486l-.25-.036c-.511-.075-.858-.253-1.102-.477C4.908 3.753 4.75 3.432 4.75 3.004V3H6.5Zm1.5 5.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM4.75 14.5a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75Z"></path></svg>
+                      </span>
                       <span>Longest Streak: <strong>{{ profile.metrics.longest_streak }}</strong> days</span>
                     </div>
                     <div class="readme-p-stat">
-                      <span class="p-bullet">⭐</span>
+                      <span class="p-bullet-svg">
+                        <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97 1.9 4.167a.75.75 0 0 1-1.087.79L8 11.777l-3.766 1.98a.75.75 0 0 1-1.087-.79l1.9-4.167L1.001 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Zm0 2.445L6.615 5.5a.75.75 0 0 1-.564.41l-3.097.45 2.24 2.184a.75.75 0 0 1 .216.664l-.528 3.084 2.769-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.53-3.084a.75.75 0 0 1 .216-.664l2.24-2.183-3.096-.45a.75.75 0 0 1-.564-.41L8 2.695Z"></path></svg>
+                      </span>
                       <span>Stars Earned: <strong>{{ profile.profile.total_stars_earned }}</strong></span>
                     </div>
                   </div>
@@ -135,11 +155,13 @@
                       <span class="repo-lang-dot" :style="{ backgroundColor: getLangColor(repo.primary_language) }"></span>
                       {{ repo.primary_language }}
                     </span>
-                    <a v-if="repo.stars > 0" :href="`https://github.com/${repo.full_name || repo.name}/stargazers`" target="_blank" class="repo-meta-item link-meta">
-                      ⭐ {{ repo.stars }}
+                    <a v-if="repo.stars > 0" :href="`https://github.com/${repo.full_name || repo.name}/stargazers`" target="_blank" class="repo-meta-item link-meta" style="display: flex; align-items: center; gap: 4px;">
+                      <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97 1.9 4.167a.75.75 0 0 1-1.087.79L8 11.777l-3.766 1.98a.75.75 0 0 1-1.087-.79l1.9-4.167L1.001 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Zm0 2.445L6.615 5.5a.75.75 0 0 1-.564.41l-3.097.45 2.24 2.184a.75.75 0 0 1 .216.664l-.528 3.084 2.769-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.53-3.084a.75.75 0 0 1 .216-.664l2.24-2.183-3.096-.45a.75.75 0 0 1-.564-.41L8 2.695Z"></path></svg>
+                      {{ repo.stars }}
                     </a>
-                    <a v-if="repo.forks > 0" :href="`https://github.com/${repo.full_name || repo.name}/forks`" target="_blank" class="repo-meta-item link-meta">
-                      🍴 {{ repo.forks }}
+                    <a v-if="repo.forks > 0" :href="`https://github.com/${repo.full_name || repo.name}/forks`" target="_blank" class="repo-meta-item link-meta" style="display: flex; align-items: center; gap: 4px;">
+                      <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M5 3.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm0 2.122a2.25 2.25 0 1 0-1.5 0v.878A2.25 2.25 0 0 0 5.75 8.5h1.5v2.128a2.251 2.251 0 1 0 1.5 0V8.5h1.5A2.25 2.25 0 0 0 12.5 6.25v-.878a2.25 2.25 0 1 0-1.5 0v.878a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 5 6.25v-.878Zm3.75 7.378a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm3-9.5a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"></path></svg>
+                      {{ repo.forks }}
                     </a>
                     <span v-if="repo.created_at" class="repo-meta-item">
                       Created {{ formatUpdatedDate(repo.created_at) }}
@@ -147,8 +169,9 @@
                   </div>
                 </div>
                 <div class="repo-row-right">
-                  <button class="github-star-mock-btn">
-                    ⭐ Star
+                  <button class="github-star-mock-btn" style="display: flex; align-items: center; gap: 4px;">
+                    <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="12" height="12" aria-hidden="true" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97 1.9 4.167a.75.75 0 0 1-1.087.79L8 11.777l-3.766 1.98a.75.75 0 0 1-1.087-.79l1.9-4.167L1.001 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Zm0 2.445L6.615 5.5a.75.75 0 0 1-.564.41l-3.097.45 2.24 2.184a.75.75 0 0 1 .216.664l-.528 3.084 2.769-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.53-3.084a.75.75 0 0 1 .216-.664l2.24-2.183-3.096-.45a.75.75 0 0 1-.564-.41L8 2.695Z"></path></svg>
+                    Star
                   </button>
                 </div>
               </div>
@@ -157,12 +180,20 @@
 
           <!-- 3. Analytics Tab -->
           <div v-if="currentTab === 'analytics'" class="tab-pane animate-fade">
-            <!-- Language shares -->
-            <div class="analytics-row" style="margin-bottom: 24px;">
-              <LanguageDonut
-                v-if="profile.profile.language_breakdown && Object.keys(profile.profile.language_breakdown).length"
-                :language-breakdown="profile.profile.language_breakdown"
-              />
+            <!-- Language shares & Monthly Activity Grid -->
+            <div class="analytics-grid" style="margin-bottom: 24px;">
+              <div class="analytics-col">
+                <LanguageDonut
+                  v-if="profile.profile.language_breakdown && Object.keys(profile.profile.language_breakdown).length"
+                  :language-breakdown="profile.profile.language_breakdown"
+                />
+              </div>
+              <div class="analytics-col">
+                <MonthActivityChart
+                  v-if="profile.metrics && profile.metrics.month_activity"
+                  :month-activity="profile.metrics.month_activity"
+                />
+              </div>
             </div>
 
             <!-- Commits Timing & Stars Growth -->
@@ -208,6 +239,7 @@ import TopReposGrid from '../components/TopReposGrid.vue'
 import LanguageDonut from '../components/LanguageDonut.vue'
 import CommitTimePattern from '../components/CommitTimePattern.vue'
 import StarHistoryChart from '../components/StarHistoryChart.vue'
+import MonthActivityChart from '../components/MonthActivityChart.vue'
 
 const props = defineProps({
   username: {
@@ -517,6 +549,15 @@ watch(() => props.username, loadData)
 
 .p-bullet {
   font-size: 16px;
+}
+
+.p-bullet-svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-on-surface-variant);
+  width: 16px;
+  height: 16px;
 }
 
 /* Repositories Tab Content */

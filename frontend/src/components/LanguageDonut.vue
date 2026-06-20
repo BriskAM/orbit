@@ -114,7 +114,7 @@ const ACCENT_PALETTE = [
 
 const segments = computed(() => {
   const breakdown = props.languageBreakdown || {}
-  const keys = Object.keys(breakdown)
+  const keys = Object.keys(breakdown).sort((a, b) => breakdown[b] - breakdown[a])
   
   let currentOffset = 0
   return keys.map((lang, index) => {

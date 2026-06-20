@@ -34,8 +34,16 @@
 
         <div class="header-right">
           <!-- Mock profile/action icons for realism -->
-          <span class="header-icon-btn">🔔</span>
-          <span class="header-icon-btn">➕</span>
+          <span class="header-icon-btn">
+            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" fill="currentColor">
+              <path d="M8 16a2 2 0 0 0 1.985-1.75c.017-.137-.097-.25-.235-.25h-3.5c-.138 0-.252.113-.235.25A2 2 0 0 0 8 16ZM3 5c0-1.664 1.355-3 3-3h4c1.645 0 3 1.336 3 3v3.57a3.001 3.001 0 0 0 .895 2.12l.71 1.776A.749.749 0 0 1 13.93 14H2.07a.75.75 0 0 1-.675-1.077l.71-1.777c.563-.564.895-1.328.895-2.12V5Zm3-1.5A1.5 1.5 0 0 0 4.5 5v3.57c0 1.157-.485 2.266-1.33 3.11l-.17.17h10l-.17-.17A4.496 4.496 0 0 0 11.5 8.57V5A1.5 1.5 0 0 0 10 3.5H6Z"></path>
+            </svg>
+          </span>
+          <span class="header-icon-btn">
+            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" fill="currentColor">
+              <path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z"></path>
+            </svg>
+          </span>
           <div class="mock-avatar"></div>
         </div>
       </div>
@@ -48,7 +56,7 @@
     <footer class="app-footer">
       <div class="footer-container">
         <div class="footer-left">
-          <span>🛰️ Orbit Profile Analytics</span>
+          <span>Orbit Profile Analytics</span>
         </div>
         <div class="footer-right">
           <a href="https://github.com/BriskAM/orbit" target="_blank">About</a>

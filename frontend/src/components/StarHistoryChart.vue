@@ -6,7 +6,9 @@
     </div>
     
     <div v-if="!starHistory || starHistory.length === 0" class="no-data">
-      <div class="no-data-icon">⭐</div>
+      <div class="no-data-icon">
+        <svg viewBox="0 0 16 16" width="24" height="24" fill="currentColor" style="opacity: 0.3;"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97 1.9 4.167a.75.75 0 0 1-1.087.79L8 11.777l-3.766 1.98a.75.75 0 0 1-1.087-.79l1.9-4.167L1.001 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Zm0 2.445L6.615 5.5a.75.75 0 0 1-.564.41l-3.097.45 2.24 2.184a.75.75 0 0 1 .216.664l-.528 3.084 2.769-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.53-3.084a.75.75 0 0 1 .216-.664l2.24-2.183-3.096-.45a.75.75 0 0 1-.564-.41L8 2.695Z"></path></svg>
+      </div>
       <p>No star history data available.</p>
     </div>
     
