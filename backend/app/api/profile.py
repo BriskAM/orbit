@@ -1,4 +1,5 @@
 import time
+import json
 from datetime import datetime, timezone
 from flask import Blueprint, jsonify, current_app
 from backend.app.services.github_graphql import fetch_github_profile_raw
@@ -7,7 +8,7 @@ from backend.app.services.aggregator import calculate_metrics
 from backend.app.services.cache_service import get_cached_profile, save_profile_to_cache
 from backend.app.models.repo_snapshot import RepoSnapshot
 from backend.app.models.fetch_log import FetchLog
-from backend.app.extensions import db
+from backend.app.extensions import db, redis_client
 
 profile_bp = Blueprint('profile', __name__)
 
@@ -21,6 +22,21 @@ def get_profile(username):
     start_time = time.time()
     username_lower = username.lower()
     
+    # 0. Check Redis short-term cache first
+    redis_key = f"profile:response:{username_lower}"
+    if redis_client:
+        try:
+            cached_resp_str = redis_client.get(redis_key)
+            if cached_resp_str:
+                cached_resp = json.loads(cached_resp_str)
+                cached_resp["cached"] = True
+                cached_resp["source"] = "redis_cache"
+                duration_ms = int((time.time() - start_time) * 1000)
+                current_app.logger.info(f"Redis cache hit for @{username_lower} in {duration_ms}ms")
+                return jsonify(cached_resp)
+        except Exception as e:
+            current_app.logger.warning(f"Error reading from Redis cache: {e}")
+
     # 1. Check cache first
     try:
         cached = get_cached_profile(username_lower)
@@ -31,7 +47,7 @@ def get_profile(username):
             duration_ms = int((time.time() - start_time) * 1000)
             current_app.logger.info(f"Cache hit for @{username_lower} in {duration_ms}ms")
             
-            return jsonify({
+            response_data = {
                 "status": "success",
                 "source": "database_cache",
                 "cached": True,
@@ -40,7 +56,14 @@ def get_profile(username):
                     "repos": [r.to_dict() for r in snapshots],
                     "metrics": cached.metrics_json
                 }
-            })
+            }
+            if redis_client:
+                try:
+                    ttl_seconds = current_app.config.get('RESPONSE_CACHE_TTL_SECONDS', 300)
+                    redis_client.setex(redis_key, ttl_seconds, json.dumps(response_data))
+                except Exception as ex:
+                    current_app.logger.warning(f"Failed to cache database response to Redis: {ex}")
+            return jsonify(response_data)
     except Exception as e:
         current_app.logger.error(f"Error checking cache for {username_lower}: {e}")
         # Proceed to fetch if cache lookup fails
@@ -124,7 +147,7 @@ def get_profile(username):
         log_fetch_event(username_lower, 'full', api_calls, True, None, duration_ms)
         current_app.logger.info(f"Successfully cached and returned @{username_lower} in {duration_ms}ms (API calls: {api_calls})")
         
-        return jsonify({
+        response_data = {
             "status": "success",
             "source": "github_api",
             "cached": False,
@@ -133,7 +156,14 @@ def get_profile(username):
                 "repos": [r.to_dict() for r in snapshots],
                 "metrics": metrics
             }
-        })
+        }
+        if redis_client:
+            try:
+                ttl_seconds = current_app.config.get('RESPONSE_CACHE_TTL_SECONDS', 300)
+                redis_client.setex(redis_key, ttl_seconds, json.dumps(response_data))
+            except Exception as ex:
+                current_app.logger.warning(f"Failed to cache GitHub API response to Redis: {ex}")
+        return jsonify(response_data)
         
     except ValueError as e:
         duration_ms = int((time.time() - start_time) * 1000)
@@ -178,3 +208,31 @@ def log_fetch_event(username, fetch_type, api_calls, success, error_message, dur
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(f"Failed to record FetchLog for {username}: {e}")
+
+@profile_bp.route('/api/health', methods=['GET'])
+def health_check():
+    """
+    Exposes application health, database status, Redis connectivity, and GitHub rate limits.
+    """
+    from backend.app.services.rate_limit_service import get_rate_limits
+    
+    # Check DB connection
+    db_ok = True
+    try:
+        db.session.execute(db.text("SELECT 1"))
+    except Exception:
+        db_ok = False
+        
+    # Check Redis connectivity
+    redis_ok = (redis_client is not None)
+    
+    # Get Cached or Live Rate Limits
+    rate_limits = get_rate_limits()
+    
+    return jsonify({
+        "status": "healthy" if db_ok else "unhealthy",
+        "database_connected": db_ok,
+        "redis_connected": redis_ok,
+        "github_token_configured": bool(current_app.config.get('GITHUB_TOKEN')),
+        "github_rate_limits": rate_limits
+    })

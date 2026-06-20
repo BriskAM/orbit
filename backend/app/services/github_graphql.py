@@ -1,5 +1,6 @@
 import requests
 from flask import current_app
+from backend.app.services.rate_limit_service import update_rate_limits
 
 def fetch_github_profile_raw(username):
     """
@@ -108,6 +109,11 @@ def fetch_github_profile_raw(username):
             headers=headers,
             timeout=10
         )
+        # Extract and update rate limits
+        limit = response.headers.get("x-ratelimit-limit")
+        remaining = response.headers.get("x-ratelimit-remaining")
+        reset = response.headers.get("x-ratelimit-reset")
+        update_rate_limits(limit, remaining, reset)
     except requests.exceptions.RequestException as e:
         raise IOError(f"Network error when contacting GitHub GraphQL API: {e}")
     

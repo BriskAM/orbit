@@ -1,5 +1,6 @@
 import requests
 from flask import current_app
+from backend.app.services.rate_limit_service import update_rate_limits
 
 def get_auth_headers():
     """
@@ -28,6 +29,10 @@ def fetch_user_repos(username):
         url = f"https://api.github.com/users/{username}/repos?per_page=100&page={page}"
         try:
             response = requests.get(url, headers=headers, timeout=10)
+            limit = response.headers.get("x-ratelimit-limit")
+            remaining = response.headers.get("x-ratelimit-remaining")
+            reset = response.headers.get("x-ratelimit-reset")
+            update_rate_limits(limit, remaining, reset)
         except requests.exceptions.RequestException as e:
             raise IOError(f"Network error when fetching repositories: {e}")
             
@@ -59,6 +64,10 @@ def fetch_repo_languages(owner, repo_name):
     url = f"https://api.github.com/repos/{owner}/{repo_name}/languages"
     try:
         response = requests.get(url, headers=headers, timeout=10)
+        limit = response.headers.get("x-ratelimit-limit")
+        remaining = response.headers.get("x-ratelimit-remaining")
+        reset = response.headers.get("x-ratelimit-reset")
+        update_rate_limits(limit, remaining, reset)
     except requests.exceptions.RequestException as e:
         current_app.logger.warning(f"Failed to fetch languages for {owner}/{repo_name}: {e}")
         return {}
@@ -80,6 +89,10 @@ def fetch_recent_commits(owner, repo_name, username):
     url = f"https://api.github.com/repos/{owner}/{repo_name}/commits?author={username}&per_page=30"
     try:
         response = requests.get(url, headers=headers, timeout=10)
+        limit = response.headers.get("x-ratelimit-limit")
+        remaining = response.headers.get("x-ratelimit-remaining")
+        reset = response.headers.get("x-ratelimit-reset")
+        update_rate_limits(limit, remaining, reset)
     except requests.exceptions.RequestException as e:
         current_app.logger.warning(f"Failed to fetch commits for {owner}/{repo_name}: {e}")
         return []
